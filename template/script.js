@@ -2,7 +2,7 @@
 /* Быстрая персонализация: замените данные в BARBERSHOP_CONFIG под свой салон. */
 const BARBERSHOP_CONFIG = {
   brand: { name: 'ТВОЙ БАРБЕР', tagline: 'Твой стиль начинается здесь.', description: 'Демонстрационный сайт барбершопа с онлайн-формой записи.' },
-  theme: { accent: '#c39a67', background: '#171614', paper: '#f2eee6' },
+  theme: { accent: '#c39a67', accentBright: '#e2c99f', background: '#171614', paper: '#f2eee6' },
   contacts: { phone: '', address: 'Добавьте адрес салона', hours: '09:00–21:00' },
   booking: { times: Array.from({ length: 24 }, (_, index) => { const minutes = 9 * 60 + index * 30; return `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`; }) },
   images: {
@@ -43,6 +43,7 @@ function applyBrand() {
   document.title = `${BARBERSHOP_CONFIG.brand.name} — барбершоп с характером`;
   document.querySelector('meta[name="description"]').content = BARBERSHOP_CONFIG.brand.description;
   document.documentElement.style.setProperty('--accent', BARBERSHOP_CONFIG.theme.accent);
+  document.documentElement.style.setProperty('--accent-bright', BARBERSHOP_CONFIG.theme.accentBright);
   document.documentElement.style.setProperty('--ink', BARBERSHOP_CONFIG.theme.background);
   document.documentElement.style.setProperty('--paper', BARBERSHOP_CONFIG.theme.paper);
 }
@@ -583,6 +584,3 @@ $('.back-top').addEventListener('click', event => {
   event.preventDefault();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
-
-
-
