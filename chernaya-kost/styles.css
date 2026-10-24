@@ -162,13 +162,13 @@ h1,h2{font-weight:700}
 .hero-proof{gap:14px}
 .proof-mark{width:30px;height:30px;display:grid;place-items:center;border:1px solid var(--accent);border-radius:50%;color:var(--accent);font-size:16px}
 .brand-mark img,.hero-stamp img{filter:contrast(1.08)}
-.barber-grid{grid-template-columns:1fr}
-.barber-card{display:grid;grid-column:1/-1;grid-template-columns:minmax(270px,.8fr) 1.2fr;align-items:stretch}
+.barber-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+.barber-card{min-width:0}
 .barber-photo{height:300px}
 .barber-photo:after{content:"";position:absolute;inset:12px;border:1px solid rgba(113,183,169,.48);pointer-events:none}
-.barber-info{align-content:center;padding:30px 42px;border:1px solid var(--line);border-left:0}
-.barber-info h3{font-size:clamp(24px,3vw,36px);font-weight:700}
-.barber-info p,.barber-exp{font-size:14px}
+.barber-info{align-content:start;padding:17px 0;border:0;border-bottom:1px solid var(--line)}
+.barber-info h3{font-size:19px;font-weight:700}
+.barber-info p,.barber-exp{font-size:12px}
 .gallery-grid{grid-template-columns:1.15fr 1fr;grid-template-rows:280px 220px;gap:14px}
 .gallery-item:nth-child(1){grid-row:span 2}
 .gallery-item:nth-child(4){grid-column:auto}
@@ -186,4 +186,4 @@ h1,h2{font-weight:700}
 .map-pin{font-family:Georgia,serif}
 .eyebrow-line{width:38px;height:4px;border-radius:3px;background:linear-gradient(90deg,#b9504b 0 33%,#eee6d8 33% 66%,#4c789b 66%)}
 @media(max-width:900px){.brand-name{font-size:12px;letter-spacing:.04em}.barber-info{padding:25px}.gallery-grid{grid-template-rows:230px 190px}}
-@media(max-width:680px){.brand-mark{width:38px;height:38px}.brand-name{font-size:10px;letter-spacing:0}.header-actions{gap:5px}.my-appointments-button{font-size:10px;padding-inline:7px;gap:4px}.menu-toggle{width:40px;height:40px}.hero-stamp{width:80px;height:80px;left:-20px;bottom:22px}.hero-stamp .brand-emblem-large{width:68px;height:68px}.hero-stamp .brand-emblem-large img{left:-10.8px;top:-99px;width:270px;height:173px}.barber-card{width:100%;grid-template-columns:1fr}.barber-photo{height:260px}.barber-info{padding:22px 18px;border-left:1px solid var(--line);border-top:0}.gallery-grid{grid-template-columns:1fr 1fr;grid-template-rows:220px 170px;gap:9px}.gallery-item:nth-child(1){grid-row:span 2}.gallery-item:nth-child(4){grid-column:auto}.review-card{min-height:220px;padding:27px 24px}}
+@media(max-width:680px){.brand-mark{width:38px;height:38px}.brand-name{font-size:10px;letter-spacing:0}.header-actions{gap:5px}.my-appointments-button{font-size:10px;padding-inline:7px;gap:4px}.menu-toggle{width:40px;height:40px}.hero-stamp{width:80px;height:80px;left:-20px;bottom:22px}.hero-stamp .brand-emblem-large{width:68px;height:68px}.hero-stamp .brand-emblem-large img{left:-10.8px;top:-99px;width:270px;height:173px}.barber-photo{height:clamp(205px,58vw,310px)}.barber-info{padding:12px 0}.barber-info h3{font-size:15px}.barber-info p,.barber-exp{font-size:10px}.gallery-grid{grid-template-columns:1fr 1fr;grid-template-rows:220px 170px;gap:9px}.gallery-item:nth-child(1){grid-row:span 2}.gallery-item:nth-child(4){grid-column:auto}.review-card{min-height:220px;padding:27px 24px}}
