@@ -19,7 +19,9 @@ const BARBERSHOP_CONFIG = {
     { name: 'Детская стрижка', description: 'Актуальную стоимость и детали услуги уточняйте у салона.', duration: 'Время уточняется', price: 500 }
   ],
   barbers: [
-    { name: 'Мастер салона', specialty: 'Мужские и детские стрижки · борода', experience: 'Имя уточняется' }
+    { name: 'Алексей Волков', specialty: 'Классические стрижки · фейд', experience: 'Демо-профиль · 8 лет опыта', image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=900&q=85' },
+    { name: 'Максим Орлов', specialty: 'Оформление бороды · стрижки', experience: 'Демо-профиль · 6 лет опыта', image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=900&q=85' },
+    { name: 'Илья Романов', specialty: 'Современные формы · детские стрижки', experience: 'Демо-профиль · 5 лет опыта', image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=900&q=85' }
   ],
   reviews: []
 };
@@ -69,7 +71,7 @@ function renderServices() {
 function renderBarbers() {
   $('#barber-grid').innerHTML = BARBERSHOP_CONFIG.barbers.map((barber, i) => `
     <article class="barber-card"><div class="barber-photo"><img loading="lazy" alt="Барбершоп «Чёрная Кость» — ${escapeHTML(barber.name)}"><span class="barber-index">ЧЁРНАЯ КОСТЬ / 0${i + 1}</span></div><div class="barber-info"><h3>${escapeHTML(barber.name)}</h3><p>${escapeHTML(barber.specialty)}</p><span class="barber-exp">${escapeHTML(barber.experience)}</span></div></article>`).join('');
-  $$('.barber-photo img').forEach((img, i) => setImage(img, BARBERSHOP_CONFIG.images.barbers[i % BARBERSHOP_CONFIG.images.barbers.length], 'Фотография барбершопа «Чёрная Кость»'));
+  $$('.barber-photo img').forEach((img, i) => setImage(img, BARBERSHOP_CONFIG.barbers[i].image || BARBERSHOP_CONFIG.images.barbers[i % BARBERSHOP_CONFIG.images.barbers.length], 'Демонстрационный портрет барбера'));
   $('#barber-select').insertAdjacentHTML('beforeend', BARBERSHOP_CONFIG.barbers.map((barber, i) => `<option value="${i}" data-meta="${escapeHTML(barber.specialty)}">${escapeHTML(barber.name)}</option>`).join(''));
 }
 
