@@ -341,7 +341,14 @@ function renderAppointments() {
   const appointments = readAppointments().sort((a, b) => `${a.date}${a.time}`.localeCompare(`${b.date}${b.time}`));
   const list = $('#appointments-list');
   list.replaceChildren();
-  $('#appointment-count').textContent = String(appointments.length);
+  const countBadge = $('#appointment-count');
+  const countValue = String(appointments.length);
+  if (countBadge.textContent !== countValue) {
+    countBadge.textContent = countValue;
+    countBadge.classList.remove('is-bumped');
+    void countBadge.offsetWidth;
+    countBadge.classList.add('is-bumped');
+  }
   $('#my-appointments-button').setAttribute('aria-label', `Мои записи: ${appointments.length}`);
   $('#appointments-storage-note').textContent = storageUnavailable ? 'Хранилище браузера недоступно: записи сохраняются только до закрытия этой страницы.' : 'Записи сохраняются только в локальном хранилище этого браузера.';
   if (!appointments.length) {
@@ -565,6 +572,55 @@ function initForm() {
   });
 }
 
+/* Анимации интерфейса: появление секций при прокрутке и сжатие шапки. */
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+function initHeaderScroll() {
+  const header = $('.site-header');
+  if (!header) return;
+  let queued = false;
+  const update = () => { header.classList.toggle('is-scrolled', window.scrollY > 18); queued = false; };
+  const onScroll = () => { if (queued) return; queued = true; window.requestAnimationFrame(update); };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  update();
+}
+
+function initReveal() {
+  if (!('IntersectionObserver' in window) || prefersReducedMotion.matches) return;
+  const groups = [
+    ['.intro-grid > *', 90],
+    ['.section-heading > *', 80],
+    ['.service-row', 70],
+    ['.barber-card', 110],
+    ['.gallery-item', 90],
+    ['.review-layout > *', 110],
+    ['.booking-grid > *', 110],
+    ['.contacts-grid > *', 110],
+    ['.quote-inner p, .quote-credit', 90]
+  ];
+  const viewportHeight = window.innerHeight || 800;
+  groups.forEach(([selector, step]) => {
+    $$(selector).forEach((element, index) => {
+      const rect = element.getBoundingClientRect();
+      // Всё, что видно или почти видно при загрузке, не прячем:
+      // анимация нужна только блокам, до которых нужно долистать.
+      if (rect.top < viewportHeight * 1.1 && rect.bottom > 0) return;
+      element.classList.add('reveal');
+      element.style.setProperty('--reveal-delay', `${Math.min(index * step, 360)}ms`);
+    });
+  });
+  if (!$('.reveal')) return;
+  document.documentElement.classList.add('js-reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add('is-visible');
+      observer.unobserve(entry.target);
+    });
+  }, { rootMargin: '0px 0px -6% 0px', threshold: 0.15 });
+  $$('.reveal').forEach(element => observer.observe(element));
+}
+
 applyBrand();
 setImage($('.hero-image'), BARBERSHOP_CONFIG.images.hero, 'Интерьер демонстрационного барбершопа');
 renderServices();
@@ -577,6 +633,8 @@ setupPicker($('#barber-select'), 'Выберите мастера');
 initMenu();
 initForm();
 initAppointments();
+initHeaderScroll();
+initReveal();
 $('#review-prev')?.addEventListener('click', () => { reviewIndex = (reviewIndex - 1 + BARBERSHOP_CONFIG.reviews.length) % BARBERSHOP_CONFIG.reviews.length; renderReview(); });
 $('#review-next')?.addEventListener('click', () => { reviewIndex = (reviewIndex + 1) % BARBERSHOP_CONFIG.reviews.length; renderReview(); });
 $('#year').textContent = new Date().getFullYear();

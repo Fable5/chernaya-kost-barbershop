@@ -188,3 +188,242 @@ h1,h2{font-weight:700}
 @media(max-width:900px){.brand-name{font-size:12px;letter-spacing:.04em}.barber-info{padding:25px}.gallery-grid{grid-template-rows:230px 190px}}
 @media(max-width:680px){.brand-mark{width:38px;height:38px}.brand-name{font-size:10px;letter-spacing:0}.header-actions{gap:5px}.my-appointments-button{font-size:10px;padding-inline:7px;gap:4px}.menu-toggle{width:40px;height:40px}.hero-stamp{width:80px;height:80px;left:-20px;bottom:22px}.hero-stamp .brand-emblem-large{width:68px;height:68px}.hero-stamp .brand-emblem-large img{left:-10.8px;top:-99px;width:270px;height:173px}.barber-photo{height:clamp(205px,58vw,310px)}.barber-info{padding:12px 0}.barber-info h3{font-size:15px}.barber-info p,.barber-exp{font-size:10px}.gallery-grid{grid-template-columns:1fr 1fr;grid-template-rows:220px 170px;gap:9px}.gallery-item:nth-child(1){grid-row:span 2}.gallery-item:nth-child(4){grid-column:auto}.review-card{min-height:220px;padding:27px 24px}}
 @media(max-width:680px){.barber-grid{grid-template-columns:1fr 1fr;gap:25px 13px}.barber-card:last-child{grid-column:1/-1;width:calc(50% - 7px)}}
+
+/* ============================================================
+   Кнопки, скругления и движение
+   Скруглённые интерактивные элементы, блики на кнопках и
+   мягкая анимация появления секций.
+   ============================================================ */
+:root{
+  --radius-sm:8px;
+  --radius-md:12px;
+  --radius-lg:18px;
+  --radius-pill:999px;
+  --reveal-ease:cubic-bezier(.22,.8,.24,1);
+}
+
+/* Скрытое мобильное меню уезжает за край и раньше растягивало страницу
+   по горизонтали. clip не создаёт скролл-контейнер, поэтому sticky-шапка жива. */
+html,body{overflow-x:clip}
+
+/* --- Кнопки ------------------------------------------------- */
+.button{
+  position:relative;
+  gap:20px;
+  padding:0 26px;
+  border-radius:var(--radius-md);
+  border:1px solid rgba(164,213,203,.6);
+  background:linear-gradient(168deg,#8ccabc 0%,#71b7a9 58%,#5ea193 100%);
+  color:#121e1a;
+  box-shadow:0 12px 28px -18px rgba(113,183,169,.9),inset 0 1px 0 rgba(255,255,255,.45);
+  overflow:hidden;
+  isolation:isolate;
+  transition:transform .28s var(--ease),box-shadow .28s var(--ease),background .28s ease;
+}
+.button::before{
+  content:"";
+  position:absolute;
+  inset:-70% -30%;
+  z-index:-1;
+  background:linear-gradient(105deg,transparent 38%,rgba(255,255,255,.55) 50%,transparent 62%);
+  transform:translateX(-75%) rotate(8deg);
+  opacity:0;
+  transition:transform .6s var(--ease),opacity .35s ease;
+  pointer-events:none;
+}
+.button:hover{
+  background:linear-gradient(168deg,#9dd8ca 0%,#7fc4b5 58%,#6aafa1 100%);
+  box-shadow:0 22px 42px -20px rgba(113,183,169,.95),inset 0 1px 0 rgba(255,255,255,.55);
+  transform:translateY(-2px);
+}
+.button:hover::before{transform:translateX(75%) rotate(8deg);opacity:1}
+.button:active{transform:translateY(0) scale(.98);box-shadow:0 8px 18px -14px rgba(113,183,169,.8),inset 0 2px 6px rgba(0,0,0,.2)}
+.button>span[aria-hidden="true"]{transition:transform .3s var(--ease)}
+.button:hover>span[aria-hidden="true"]{transform:translate(3px,-3px)}
+.button-small{border-radius:var(--radius-sm);padding-inline:18px;gap:14px}
+.skip-link{border-radius:var(--radius-md)}
+
+/* Второстепенные кнопки и счётчик */
+.my-appointments-button{
+  border-radius:var(--radius-pill);
+  padding:0 15px;
+  background:rgba(241,238,231,.035);
+  transition:border-color .25s ease,color .25s ease,background .25s ease,transform .25s var(--ease),box-shadow .25s ease;
+}
+.my-appointments-button:hover{transform:translateY(-1px);background:rgba(113,183,169,.12);box-shadow:0 10px 22px -16px rgba(113,183,169,.9)}
+.my-appointments-button:active{transform:translateY(0) scale(.97)}
+.appointment-count{border-radius:var(--radius-pill);transition:transform .25s var(--ease),background .25s ease}
+.appointment-count.is-bumped{animation:count-pop .5s var(--ease)}
+@keyframes count-pop{0%{transform:scale(1)}45%{transform:scale(1.35);background:rgba(164,213,203,.42)}100%{transform:scale(1)}}
+
+.menu-toggle{border-radius:var(--radius-sm)}
+.round-button{border-radius:50%;transition:background .2s ease,color .2s ease,transform .25s var(--ease),box-shadow .25s ease}
+.round-button:hover{transform:scale(1.06);box-shadow:0 10px 22px -14px rgba(0,0,0,.45)}
+.round-button:active{transform:scale(.94)}
+
+/* Ссылки: подчёркивание «прорастает» и стрелка сдвигается */
+.site-nav>a:not(.button){position:relative}
+.site-nav>a:not(.button)::after{
+  content:"";
+  position:absolute;
+  left:0;right:0;bottom:-5px;
+  height:1px;
+  background:var(--accent);
+  transform:scaleX(0);
+  transform-origin:left center;
+  transition:transform .28s var(--ease);
+}
+.site-nav>a:not(.button):hover::after,.site-nav>a:not(.button):focus-visible::after{transform:scaleX(1)}
+.text-link{position:relative}
+.text-link::after{
+  content:"";
+  position:absolute;
+  left:0;right:0;bottom:-3px;
+  height:1px;
+  background:currentColor;
+  opacity:.55;
+  transform:scaleX(0);
+  transform-origin:left center;
+  transition:transform .3s var(--ease),opacity .3s ease;
+}
+.text-link:hover::after{transform:scaleX(1);opacity:.85}
+.intro .text-link::after{display:none}
+.text-link span{display:inline-block;transition:transform .3s var(--ease)}
+.text-link:hover span{transform:translateX(3px)}
+.back-top{position:relative}
+.back-top::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:1px;background:currentColor;transform:scaleX(0);transform-origin:left center;transition:transform .3s var(--ease)}
+.back-top:hover::after{transform:scaleX(1)}
+
+/* --- Поля и выпадающие списки -------------------------------- */
+.picker-trigger{
+  border-radius:var(--radius-md);
+  transition:border-color .2s ease,color .2s ease,background .2s ease,box-shadow .2s ease;
+}
+.picker-trigger:hover,.picker-trigger[aria-expanded="true"]{box-shadow:0 0 0 3px rgba(113,183,169,.12)}
+.picker-chevron{transition:transform .25s var(--ease)}
+.picker-trigger[aria-expanded="true"]:not(.calendar-trigger) .picker-chevron{transform:rotate(180deg)}
+.picker-popover,.calendar-popover{
+  border-radius:var(--radius-md);
+  box-shadow:0 26px 60px -22px rgba(0,0,0,.72);
+  animation:popover-in .18s var(--ease) both;
+}
+@keyframes popover-in{from{opacity:0;transform:translateY(-8px) scale(.98)}to{opacity:1;transform:none}}
+.picker-options{gap:2px}
+.picker-option{border-bottom:0;border-radius:7px;position:relative}
+.picker-options--time .picker-option{border-radius:var(--radius-sm)}
+.calendar-nav{
+  border-radius:50%;
+  transition:background .2s ease,border-color .2s ease,color .2s ease,transform .2s var(--ease);
+}
+.calendar-nav:hover:not(:disabled){transform:scale(1.07)}
+.calendar-day{border-radius:var(--radius-sm);transition:background .14s ease,color .14s ease,border-color .14s ease,transform .16s var(--ease)}
+.calendar-day:hover:not(:disabled){transform:translateY(-1px)}
+.calendar-day.is-selected{box-shadow:0 6px 16px -8px rgba(113,183,169,.9)}
+.calendar-day.is-today{border-radius:var(--radius-sm)}
+.field input,.field select{border-radius:var(--radius-md)}
+.field input:focus,.field select:focus{box-shadow:0 0 0 3px rgba(113,183,169,.14)}
+.consent-row input{border-radius:4px}
+.booking-form{border-radius:var(--radius-lg)}
+.form-result:not(:empty){border-radius:0 var(--radius-sm) var(--radius-sm) 0;animation:result-in .3s var(--ease) both}
+@keyframes result-in{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.form-submit{border-radius:var(--radius-md)}
+
+/* --- Диалоги, карточки, медиа --------------------------------- */
+.appointments-dialog,.booking-success-dialog{border-radius:var(--radius-lg)}
+.appointments-dialog[open]{animation:dialog-in .3s var(--ease) both}
+.appointments-dialog[open]::backdrop{animation:backdrop-in .25s ease both}
+@keyframes dialog-in{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes backdrop-in{from{opacity:0}to{opacity:1}}
+.appointments-close{width:40px;height:40px;border-radius:50%;transition:color .2s ease,border-color .2s ease,background .2s ease,transform .3s var(--ease)}
+.appointments-close:hover{transform:rotate(90deg);background:rgba(113,183,169,.1)}
+.success-close{border-radius:var(--radius-sm);transition:border-color .2s ease,color .2s ease,background .2s ease,transform .2s var(--ease)}
+.success-close:hover{background:rgba(113,183,169,.08)}
+.appointments-empty{border-radius:var(--radius-md)}
+.appointment-card{border-radius:var(--radius-md);animation:card-in .3s var(--ease) both}
+@keyframes card-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.appointment-remove{
+  display:inline-flex;
+  align-items:center;
+  min-height:34px;
+  padding:0 13px;
+  border:1px solid rgba(239,154,137,.32);
+  border-radius:var(--radius-pill);
+  background:transparent;
+  color:#c9a49b;
+  text-decoration:none;
+  transition:background .2s ease,border-color .2s ease,color .2s ease,transform .2s var(--ease);
+}
+.appointment-remove:hover{color:#ffb3a2;border-color:#ef9a89;background:rgba(239,154,137,.12);transform:translateY(-1px)}
+.demo-tag{border-radius:var(--radius-pill);background:rgba(113,183,169,.06)}
+.review-card{border-radius:var(--radius-lg);transition:border-color .3s ease,box-shadow .3s ease}
+.barber-photo{border-radius:var(--radius-md)}
+.barber-photo:after{border-radius:calc(var(--radius-md) - 4px)}
+.gallery-item,.map-placeholder{border-radius:var(--radius-md)}
+.map-placeholder{overflow:hidden}
+.service-row{border-radius:var(--radius-md);transition:background .2s ease,padding .22s ease,box-shadow .22s ease}
+.service-row:hover{box-shadow:inset 3px 0 0 var(--accent)}
+
+/* --- Шапка ---------------------------------------------------- */
+.site-header{transition:height .3s var(--ease),box-shadow .3s ease,background .3s ease}
+@media(min-width:681px){
+  .site-header.is-scrolled{height:70px;box-shadow:0 16px 36px -26px rgba(0,0,0,.95);background:rgba(15,15,13,.97)}
+}
+
+/* --- Появление первого экрана -------------------------------- */
+@keyframes rise-in{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+@keyframes media-in{from{opacity:0;transform:translateY(28px) scale(.985)}to{opacity:1;transform:none}}
+@keyframes stamp-in{from{opacity:0;transform:scale(.55) rotate(-18deg)}to{opacity:1;transform:none}}
+@keyframes fade-in{from{opacity:0}to{opacity:1}}
+@keyframes line-grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes line-pulse{0%,100%{transform:scaleX(.45);opacity:.55}50%{transform:scaleX(1);opacity:1}}
+@keyframes mark-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes quote-drift{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes dot-pulse{0%{box-shadow:0 0 0 0 rgba(139,175,131,.35)}70%{box-shadow:0 0 0 9px rgba(139,175,131,0)}100%{box-shadow:0 0 0 0 rgba(139,175,131,0)}}
+.hero-copy>*{animation:rise-in .75s var(--ease) both}
+.hero-copy>*:nth-child(1){animation-delay:.06s}
+.hero-copy>*:nth-child(2){animation-delay:.14s}
+.hero-copy>*:nth-child(3){animation-delay:.22s}
+.hero-copy>*:nth-child(4){animation-delay:.3s}
+.hero-copy>*:nth-child(5){animation-delay:.38s}
+.eyebrow-line{transform-origin:left center;animation:line-grow .8s var(--ease) .25s both}
+.hero-visual{animation:media-in .95s var(--ease) .12s both}
+.hero-stamp{animation:stamp-in .9s var(--ease) .55s both}
+.hero-caption{animation:fade-in .9s ease .75s both}
+.hero-bottom{animation:fade-in .9s ease .85s both}
+.scroll-line{transform-origin:left center;animation:line-pulse 2.6s ease-in-out 1.4s infinite}
+.proof-mark{animation:mark-float 4.5s ease-in-out 1.6s infinite}
+.quote-mark{animation:quote-drift 9s ease-in-out infinite}
+.contact-dot{animation:dot-pulse 2.4s ease-out infinite}
+
+/* --- Появление секций при прокрутке -------------------------- */
+html.js-reveal .reveal{
+  opacity:0;
+  transform:translateY(24px);
+  transition:opacity .7s var(--reveal-ease) var(--reveal-delay,0ms),transform .7s var(--reveal-ease) var(--reveal-delay,0ms);
+}
+html.js-reveal .reveal.is-visible{opacity:1;transform:none}
+
+/* --- Мобильное меню ------------------------------------------ */
+@media(max-width:680px){
+  .site-nav>a:not(.button)::after{display:none}
+  /* Шапка с backdrop-filter становится containing block для fixed-меню,
+     поэтому высоту задаём от вьюпорта, иначе подложка схлопывается. */
+  .site-nav{top:68px;left:0;right:0;bottom:auto;height:calc(100vh - 68px);height:calc(100dvh - 68px);overflow-y:auto;overscroll-behavior:contain}
+  .site-nav.is-open>a{animation:nav-link-in .35s var(--ease) both}
+  .site-nav.is-open>a:nth-child(2){animation-delay:.04s}
+  .site-nav.is-open>a:nth-child(3){animation-delay:.08s}
+  .site-nav.is-open>a:nth-child(4){animation-delay:.12s}
+  .site-nav.is-open>a:nth-child(5){animation-delay:.16s}
+  .site-nav.is-open>a:nth-child(6){animation-delay:.2s}
+  @keyframes nav-link-in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+}
+
+/* --- Уважение к системной настройке движения ----------------- */
+@media(prefers-reduced-motion:reduce){
+  .hero-copy>*,.hero-visual,.hero-stamp,.hero-caption,.hero-bottom,
+  .eyebrow-line,.scroll-line,.proof-mark,.quote-mark,.contact-dot,
+  .picker-popover,.calendar-popover,.appointment-card,.appointments-dialog[open],
+  .appointments-dialog[open]::backdrop,.site-nav.is-open>a{animation:none!important}
+  html.js-reveal .reveal,html.js-reveal .reveal.is-visible{opacity:1!important;transform:none!important;transition:none!important}
+  .button:hover,.my-appointments-button:hover,.appointment-remove:hover,.round-button:hover,.appointments-close:hover,.calendar-day:hover:not(:disabled){transform:none!important}
+}
